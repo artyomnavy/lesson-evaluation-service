@@ -4,6 +4,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schemas/schema';
 
+export const DB_DRIZZLE = Symbol('DB_DRIZZLE');
+
 const pgOptions = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -16,13 +18,13 @@ const pgOptions = {
   imports: [ConfigModule],
   providers: [
     {
-      provide: 'db',
+      provide: DB_DRIZZLE,
       useFactory: async () => {
         const pool = new Pool(pgOptions);
         return drizzle<typeof schema>(pool, { schema });
       },
     },
   ],
-  exports: ['db'],
+  exports: [DB_DRIZZLE],
 })
 export class DrizzleModule {}
