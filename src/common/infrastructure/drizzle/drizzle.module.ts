@@ -3,14 +3,17 @@ import { ConfigModule } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schemas/schema';
+import { config } from 'dotenv';
+
+config();
 
 export const DB_DRIZZLE = Symbol('DB_DRIZZLE');
 
 const pgOptions = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: String(process.env.DB_HOST),
+  user: String(process.env.DB_USER),
+  password: String(process.env.DB_PASSWORD),
+  database: String(process.env.DB_NAME),
   port: Number(process.env.DB_PORT),
 };
 

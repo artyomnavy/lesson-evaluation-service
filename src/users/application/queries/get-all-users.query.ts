@@ -11,7 +11,7 @@ export class GetAllUsersQueryHandler
 {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(query: GetAllUsersQuery): Promise<UserOutputModel[]> {
+  async execute(): Promise<UserOutputModel[]> {
     return await this.usersQueryRepository.getAllUsers();
   }
 }
