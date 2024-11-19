@@ -6,11 +6,8 @@ import { UsersQueryRepository } from './infrastructure/users.query-repository';
 import { UsersRepository } from './infrastructure/users.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
-import { EmailExistConstraint } from '../common/decorators/validators/email-exist-validator.decorator';
 
 const usersControllers = [UsersController];
-
-const usersConstraints = [EmailExistConstraint];
 
 const usersQueries = [GetAllUsersQueryHandler];
 
@@ -21,11 +18,6 @@ const usersRepositories = [UsersQueryRepository, UsersRepository];
 @Module({
   imports: [CqrsModule, DrizzleModule],
   controllers: [...usersControllers],
-  providers: [
-    ...usersConstraints,
-    ...usersRepositories,
-    ...usersQueries,
-    ...usersUseCases,
-  ],
+  providers: [...usersRepositories, ...usersQueries, ...usersUseCases],
 })
 export class UserModule {}

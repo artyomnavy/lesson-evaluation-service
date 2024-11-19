@@ -28,8 +28,6 @@ export class UsersQueryRepository {
       .from(usersTable)
       .where(eq(usersTable.email, email));
 
-    console.log(users, 'users');
-
     return users.length > 0;
   }
 }
