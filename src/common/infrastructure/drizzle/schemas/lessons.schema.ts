@@ -4,8 +4,8 @@ import { userLessonsEvaluationsTable } from './userLessonsEvaluations.schema';
 
 export const lessonsTable = pgTable('lessons', {
   id: serial().primaryKey(),
-  name: varchar({ length: 100 }).notNull(),
-  code: varchar({ length: 20 }).notNull(),
+  name: varchar({ length: 100 }).notNull().unique(),
+  code: varchar({ length: 20 }).notNull().unique(),
 });
 
 export const lessonsRelations = relations(lessonsTable, ({ many }) => ({

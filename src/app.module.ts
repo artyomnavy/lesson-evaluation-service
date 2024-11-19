@@ -7,6 +7,7 @@ import { UserModule } from './users/user.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { config } from 'dotenv';
 import { TestController } from './common/api/testing.controller';
+import { LessonModule } from './lessons/lesson.module';
 
 config();
 
@@ -20,6 +21,7 @@ const appControllers = [AppController, TestController];
     CqrsModule,
     DrizzleModule,
     UserModule,
+    LessonModule,
   ],
   controllers: [...appControllers],
   providers: [AppService],
