@@ -1,6 +1,6 @@
 import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { userLessonsEvaluationsTable } from './userLessonsEvaluations.schema';
+import { userLessonsEvaluationsTable } from './user-lessons-evaluations.schema';
 
 export const lessonsTable = pgTable('lessons', {
   id: serial().primaryKey(),

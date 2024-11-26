@@ -1,16 +1,14 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class CreateLessonModel {
-  @MaxLength(100)
+export class CreateEvaluationModel {
   @Transform(({ value }) => value?.trim())
   @IsString()
   @IsNotEmpty()
-  name: string;
+  userId: string;
 
-  @MaxLength(20)
   @Transform(({ value }) => value?.trim())
   @IsString()
   @IsNotEmpty()
-  code: string;
+  score: string;
 }

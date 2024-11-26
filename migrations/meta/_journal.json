@@ -15,6 +15,13 @@
       "when": 1732043657785,
       "tag": "0001_AddUniqeForNameAndCodeColumnsLessonsTable",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1732651656188,
+      "tag": "0002_AddCreatedAtColumnAndNullableColumnEvaluationIdForUserLessonsEvaluationsTableAndAddupdatedAtColumnForEvaluationsTable",
+      "breakpoints": true
     }
   ]
 }

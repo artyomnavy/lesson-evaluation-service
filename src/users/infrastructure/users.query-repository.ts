@@ -30,4 +30,21 @@ export class UsersQueryRepository {
 
     return users.length > 0;
   }
+
+  async getUserById(id: number): Promise<UserOutputModel | null> {
+    const users = await this.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id));
+
+    if (users.length > 0) {
+      return {
+        id: users[0].id.toString(),
+        name: users[0].name,
+        email: users[0].email,
+      };
+    } else {
+      return null;
+    }
+  }
 }
