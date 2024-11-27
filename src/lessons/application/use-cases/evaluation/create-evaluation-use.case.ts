@@ -59,23 +59,21 @@ export class CreateEvaluationUseCase
     }
 
     if (activeLesson.evaluationId !== null) {
-      throw new ConflictException('Evaluation exist');
+      throw new ConflictException('Evaluation is exists');
     }
 
     const evaluation =
       await this.evaluationsRepository.createEvaluation(+score);
 
-    // TO DO: write add eval to lesson (update active lesson)
-
-    // await this.userLessonsEvaluationsRepository.addEvaluationToActiveLesson(
-    //   activeLesson.id,
-    //   evaluation.id,
-    // );
+    await this.userLessonsEvaluationsRepository.addEvaluationToActiveLesson(
+      activeLesson.id,
+      evaluation.id,
+    );
 
     return {
       id: evaluation.id.toString(),
       userId: user.id.toString(),
-      score: evaluation.score.toString(),
+      score: evaluation.score!.toString(),
     };
   }
 }

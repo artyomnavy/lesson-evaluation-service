@@ -1,9 +1,8 @@
-import { pgTable, serial, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { usersTable } from './users.schema';
 import { lessonsTable } from './lessons.schema';
 import { evaluationsTable } from './evaluations.schema';
-import { timestamp } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 
 export const userLessonsEvaluationsTable = pgTable('user_lessons_evaluations', {
   id: serial('id').primaryKey(),
