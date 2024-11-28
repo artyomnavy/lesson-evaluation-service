@@ -4,8 +4,10 @@ import { DB_DRIZZLE } from '../infrastructure/drizzle/drizzle.module';
 import { DrizzlePgDB } from '../infrastructure/drizzle/drizzle';
 import { usersTable } from '../infrastructure/drizzle/schemas/users.schema';
 import { lessonsTable } from '../infrastructure/drizzle/schemas/lessons.schema';
+import { evaluationsTable } from '../infrastructure/drizzle/schemas/evaluations.schema';
+import { userLessonsEvaluationsTable } from '../infrastructure/drizzle/schemas/user-lessons-evaluations.schema';
 
-@Controller('testing')
+@Controller('api/testing')
 export class TestController {
   constructor(
     @Inject(DB_DRIZZLE)
@@ -17,6 +19,8 @@ export class TestController {
   async deleteAllData() {
     await this.db.delete(usersTable);
     await this.db.delete(lessonsTable);
+    await this.db.delete(evaluationsTable);
+    await this.db.delete(userLessonsEvaluationsTable);
     return;
   }
 }

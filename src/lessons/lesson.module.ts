@@ -10,6 +10,7 @@ import { UserLessonsEvaluationsRepository } from './infrastructure/active-lesson
 import { CreateEvaluationUseCase } from './application/use-cases/evaluation/create-evaluation-use.case';
 import { UserLessonsEvaluationsQueryRepository } from './infrastructure/active-lessons/user-lessons-evaluations.query-repository';
 import { EvaluationsRepository } from './infrastructure/evaluations/evaluations.repository';
+import { UsersQueryRepository } from '../users/infrastructure/users.query-repository';
 
 const lessonsControllers = [LessonsController];
 
@@ -20,15 +21,17 @@ const lessonsUseCases = [
 
 const evaluationsUseCases = [CreateEvaluationUseCase];
 
+const activeLessonsRepositories = [
+  UserLessonsEvaluationsRepository,
+  UserLessonsEvaluationsQueryRepository,
+];
+
 const availableLessonsRepositories = [
   LessonsQueryRepository,
   LessonsRepository,
 ];
 
-const activeLessonsRepositories = [
-  UserLessonsEvaluationsRepository,
-  UserLessonsEvaluationsQueryRepository,
-];
+const usersRepositories = [UsersQueryRepository];
 
 const evaluationsRepositories = [EvaluationsRepository];
 
@@ -38,6 +41,7 @@ const evaluationsRepositories = [EvaluationsRepository];
   providers: [
     ...availableLessonsRepositories,
     ...activeLessonsRepositories,
+    ...usersRepositories,
     ...lessonsUseCases,
     ...evaluationsUseCases,
     ...evaluationsRepositories,
