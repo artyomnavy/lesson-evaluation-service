@@ -16,3 +16,18 @@ export class ActiveLesson {
   userId: number;
   evaluationId: number | null;
 }
+
+export class ActiveLessonWithEvaluationsUsersOutputModel {
+  id: string;
+  name: string;
+  code: string;
+  evaluations: {
+    id: string;
+    score: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
+  }[];
+}

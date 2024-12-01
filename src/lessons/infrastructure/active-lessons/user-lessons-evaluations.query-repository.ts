@@ -2,7 +2,10 @@ import { DrizzlePgDB } from '../../../common/infrastructure/drizzle/drizzle';
 import { DB_DRIZZLE } from '../../../common/infrastructure/drizzle/drizzle.module';
 import { Inject, Injectable } from '@nestjs/common';
 import { userLessonsEvaluationsTable } from '../../../common/infrastructure/drizzle/schemas/user-lessons-evaluations.schema';
-import { ActiveLesson } from '../../api/models/lesson/lesson.output.model';
+import {
+  ActiveLesson,
+  ActiveLessonWithEvaluationsUsersOutputModel,
+} from '../../api/models/lesson/lesson.output.model';
 
 @Injectable()
 export class UserLessonsEvaluationsQueryRepository {
@@ -27,5 +30,12 @@ export class UserLessonsEvaluationsQueryRepository {
     } else {
       return lesson;
     }
+  }
+
+  async getAllActiveLessons(): Promise<
+    ActiveLessonWithEvaluationsUsersOutputModel[]
+  > {
+    // TO DO: write query all active lessons with evaluations and user info
+    return [];
   }
 }

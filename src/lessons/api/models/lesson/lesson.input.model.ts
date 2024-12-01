@@ -3,13 +3,13 @@ import { Transform } from 'class-transformer';
 
 export class CreateAvailableLessonModel {
   @MaxLength(100)
-  @Transform(({ value }) => value?.trim())
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @MaxLength(20)
-  @Transform(({ value }) => value?.trim())
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   code: string;
@@ -17,7 +17,7 @@ export class CreateAvailableLessonModel {
 
 export class CreateActiveLessonModel {
   @MaxLength(100)
-  @Transform(({ value }) => value?.trim())
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   availableLessonName: string;

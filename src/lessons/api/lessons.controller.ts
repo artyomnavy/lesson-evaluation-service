@@ -1,5 +1,5 @@
-import { Param, Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { Param, Body, Controller, HttpCode, Post, Get } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { HttpStatuses } from '../../common/utils';
 import {
   CreateActiveLessonModel,
@@ -8,16 +8,29 @@ import {
 import {
   LessonOutputModel,
   AvailableLessonOutputModel,
+  ActiveLessonWithEvaluationsUsersOutputModel,
 } from './models/lesson/lesson.output.model';
 import { CreateAvailableLessonCommand } from '../application/use-cases/lesson/create-available-lesson-use.case';
 import { CreateActiveLessonCommand } from '../application/use-cases/lesson/create-active-lesson-use.case';
 import { CreateEvaluationModel } from './models/evaluation/evaluation.input.model';
 import { EvaluationOutputModel } from './models/evaluation/evaluation.output.model';
 import { CreateEvaluationCommand } from '../application/use-cases/evaluation/create-evaluation-use.case';
+import { GetAllActiveLessonsQuery } from '../application/queries/get-all-active-lessons.query';
 
 @Controller('api/lessons')
 export class LessonsController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
+
+  @Get()
+  @HttpCode(HttpStatuses.OK_200)
+  async getAllActiveLessons(): Promise<
+    ActiveLessonWithEvaluationsUsersOutputModel[]
+  > {
+    return await this.queryBus.execute(new GetAllActiveLessonsQuery());
+  }
 
   @Post('available')
   @HttpCode(HttpStatuses.CREATED_201)

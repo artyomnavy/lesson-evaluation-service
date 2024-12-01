@@ -11,6 +11,7 @@ import { CreateEvaluationUseCase } from './application/use-cases/evaluation/crea
 import { UserLessonsEvaluationsQueryRepository } from './infrastructure/active-lessons/user-lessons-evaluations.query-repository';
 import { EvaluationsRepository } from './infrastructure/evaluations/evaluations.repository';
 import { UsersQueryRepository } from '../users/infrastructure/users.query-repository';
+import { GetAllUsersQueryHandler } from './application/queries/get-all-active-lessons.query';
 
 const lessonsControllers = [LessonsController];
 
@@ -18,6 +19,8 @@ const lessonsUseCases = [
   CreateAvailableLessonUseCase,
   CreateActiveLessonUseCase,
 ];
+
+const lessonsQueries = [GetAllUsersQueryHandler];
 
 const evaluationsUseCases = [CreateEvaluationUseCase];
 
@@ -42,6 +45,7 @@ const evaluationsRepositories = [EvaluationsRepository];
     ...availableLessonsRepositories,
     ...activeLessonsRepositories,
     ...usersRepositories,
+    ...lessonsQueries,
     ...lessonsUseCases,
     ...evaluationsUseCases,
     ...evaluationsRepositories,
