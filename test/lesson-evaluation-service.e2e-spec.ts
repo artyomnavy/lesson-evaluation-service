@@ -237,6 +237,25 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     });
   });
 
+  // Создание реального урока
+  it('+ POST active lesson with correct data', async () => {
+    const createData = {
+      availableLessonName: availableLesson1.name,
+      userIds: [user1.id, user2.id],
+    };
+
+    const createActiveLesson = await request(server)
+      .post('/api/lessons')
+      .send(createData)
+      .expect(HttpStatuses.CREATED_201);
+
+    // expect(createActiveLesson.body).toStrictEqual({
+    //   message: [expect.any(String)],
+    //   error: 'Bad Request',
+    //   statusCode: HttpStatuses.BAD_REQUEST_400,
+    // });
+  });
+
   afterAll(async () => {
     await request(server)
       .delete(`/api/testing/all-data`)

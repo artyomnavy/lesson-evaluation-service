@@ -5,10 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
-import { UserLessonsEvaluationsRepository } from '../../../infrastructure/active-lessons/user-lessons-evaluations.repository';
+import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-to-grade-book/user-lessons-evaluations.repository';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { EvaluationsRepository } from '../../../infrastructure/evaluations/evaluations.repository';
-import { UserLessonsEvaluationsQueryRepository } from '../../../infrastructure/active-lessons/user-lessons-evaluations.query-repository';
+import { UserLessonsEvaluationsQueryRepository } from '../../../infrastructure/records-to-grade-book/user-lessons-evaluations.query-repository';
 import { EvaluationOutputModel } from '../../../api/models/evaluation/evaluation.output.model';
 
 export class CreateEvaluationCommand {

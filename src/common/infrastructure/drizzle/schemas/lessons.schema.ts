@@ -1,6 +1,6 @@
 import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { userLessonsEvaluationsTable } from './user-lessons-evaluations.schema';
+import { activeLessonsTable } from './active-lessons.schema';
 
 export const lessonsTable = pgTable('lessons', {
   id: serial().primaryKey(),
@@ -9,5 +9,5 @@ export const lessonsTable = pgTable('lessons', {
 });
 
 export const lessonsRelations = relations(lessonsTable, ({ many }) => ({
-  userLessonsEvaluationsTable: many(userLessonsEvaluationsTable),
+  activeLessonsTable: many(activeLessonsTable),
 }));

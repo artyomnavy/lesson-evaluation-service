@@ -2,27 +2,29 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
 import { LessonOutputModel } from '../../../api/models/lesson/lesson.output.model';
-import { UserLessonsEvaluationsRepository } from '../../../infrastructure/active-lessons/user-lessons-evaluations.repository';
+import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-to-grade-book/user-lessons-evaluations.repository';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
+import { ActiveLessonsRepository } from '../../../infrastructure/active-lessons/active-lessons.repository';
 
-export class CreateActiveLessonCommand {
+export class CreateActiveLessonAndRecordsToGradeBookCommand {
   constructor(
     public readonly availableLessonName: string,
     public readonly userIds: string[],
   ) {}
 }
-@CommandHandler(CreateActiveLessonCommand)
-export class CreateActiveLessonUseCase
-  implements ICommandHandler<CreateActiveLessonCommand>
+@CommandHandler(CreateActiveLessonAndRecordsToGradeBookCommand)
+export class CreateActiveLessonAndRecordsToGradeBookUseCase
+  implements ICommandHandler<CreateActiveLessonAndRecordsToGradeBookCommand>
 {
   constructor(
     private readonly userLessonsEvaluationsRepository: UserLessonsEvaluationsRepository,
     private readonly lessonsQueryRepository: LessonsQueryRepository,
+    private readonly activeLessonsRepository: ActiveLessonsRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
   async execute(
-    command: CreateActiveLessonCommand,
+    command: CreateActiveLessonAndRecordsToGradeBookCommand,
   ): Promise<LessonOutputModel> {
     const { availableLessonName, userIds } = command;
 
@@ -32,28 +34,32 @@ export class CreateActiveLessonUseCase
       );
 
     if (!availableLesson) {
-      throw new BadRequestException(`Available lesson is not exists`);
+      throw new BadRequestException([`Available lesson is not exists`]);
     }
 
     for (const userId of userIds) {
       const user = await this.usersQueryRepository.getUserById(+userId);
 
       if (!user) {
-        throw new BadRequestException(`User with id=${userId} is not exists`);
+        throw new BadRequestException([`User with id=${userId} is not exists`]);
       }
     }
 
-    const activeLesson = userIds.map((userId) => ({
+    const activeLesson = await this.activeLessonsRepository.createActiveLesson(
+      availableLesson.id,
+    );
+
+    const recordsToGradeBook = userIds.map((userId) => ({
       userId: +userId,
-      lessonId: availableLesson.id,
+      activeLessonId: activeLesson.id,
     }));
 
-    await this.userLessonsEvaluationsRepository.createActiveLesson(
-      activeLesson,
+    await this.userLessonsEvaluationsRepository.createRecordsToGradeBook(
+      recordsToGradeBook,
     );
 
     return {
-      id: availableLesson.id.toString(),
+      id: activeLesson.id.toString(),
       name: availableLesson.name,
       code: availableLesson.code,
     };

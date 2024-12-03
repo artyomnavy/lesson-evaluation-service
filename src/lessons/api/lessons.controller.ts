@@ -10,8 +10,8 @@ import {
   AvailableLessonOutputModel,
   ActiveLessonWithEvaluationsUsersOutputModel,
 } from './models/lesson/lesson.output.model';
-import { CreateAvailableLessonCommand } from '../application/use-cases/lesson/create-available-lesson-use.case';
-import { CreateActiveLessonCommand } from '../application/use-cases/lesson/create-active-lesson-use.case';
+import { CreateAvailableLessonCommand } from '../application/use-cases/lesson/create-available-lesson.use-case';
+import { CreateActiveLessonAndRecordsToGradeBookCommand } from '../application/use-cases/lesson/create-active-lesson-and-records-to-grade-book.use-case';
 import { CreateEvaluationModel } from './models/evaluation/evaluation.input.model';
 import { EvaluationOutputModel } from './models/evaluation/evaluation.output.model';
 import { CreateEvaluationCommand } from '../application/use-cases/evaluation/create-evaluation-use.case';
@@ -46,13 +46,16 @@ export class LessonsController {
 
   @Post()
   @HttpCode(HttpStatuses.CREATED_201)
-  async createActiveLesson(
+  async createActiveLessonAndRecordsToGradeBook(
     @Body() createModel: CreateActiveLessonModel,
   ): Promise<LessonOutputModel> {
     const { availableLessonName, userIds } = createModel;
 
     return await this.commandBus.execute(
-      new CreateActiveLessonCommand(availableLessonName, userIds),
+      new CreateActiveLessonAndRecordsToGradeBookCommand(
+        availableLessonName,
+        userIds,
+      ),
     );
   }
 

@@ -11,19 +11,19 @@ export class UserLessonsEvaluationsRepository {
     private db: DrizzlePgDB,
   ) {}
 
-  async createActiveLesson(
-    activeLesson: { userId: number; lessonId: number }[],
+  async createRecordsToGradeBook(
+    recordsToGradeBook: { userId: number; activeLessonId: number }[],
   ) {
     try {
       const result = await this.db
         .insert(userLessonsEvaluationsTable)
-        .values(activeLesson)
+        .values(recordsToGradeBook)
         .returning();
 
       return result;
     } catch (error) {
-      console.error('Error create active lesson:', error);
-      throw new Error('Active lesson not create');
+      console.error('Error create records to grade book:', error);
+      throw new Error('Records to grade book not create');
     }
   }
 
