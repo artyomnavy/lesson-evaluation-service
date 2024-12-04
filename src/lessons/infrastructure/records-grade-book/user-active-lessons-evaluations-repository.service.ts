@@ -5,7 +5,7 @@ import { userLessonsEvaluationsTable } from '../../../common/infrastructure/driz
 import { eq } from 'drizzle-orm';
 
 @Injectable()
-export class UserLessonsEvaluationsRepository {
+export class UserActiveLessonsEvaluationsRepository {
   constructor(
     @Inject(DB_DRIZZLE)
     private db: DrizzlePgDB,

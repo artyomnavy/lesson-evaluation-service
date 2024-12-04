@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
 import { LessonOutputModel } from '../../../api/models/lesson/lesson.output.model';
-import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-lessons-evaluations.repository';
+import { UserActiveLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-repository.service';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { ActiveLessonsRepository } from '../../../infrastructure/active-lessons/active-lessons.repository';
 
@@ -17,7 +17,7 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
   implements ICommandHandler<CreateActiveLessonAndRecordsToGradeBookCommand>
 {
   constructor(
-    private readonly userLessonsEvaluationsRepository: UserLessonsEvaluationsRepository,
+    private readonly userActiveLessonsEvaluationsRepository: UserActiveLessonsEvaluationsRepository,
     private readonly lessonsQueryRepository: LessonsQueryRepository,
     private readonly activeLessonsRepository: ActiveLessonsRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
@@ -54,7 +54,7 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
       activeLessonId: activeLesson.id,
     }));
 
-    await this.userLessonsEvaluationsRepository.createRecordsToGradeBook(
+    await this.userActiveLessonsEvaluationsRepository.createRecordsToGradeBook(
       recordsGradeBook,
     );
 

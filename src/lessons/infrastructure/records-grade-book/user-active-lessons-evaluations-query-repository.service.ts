@@ -8,7 +8,7 @@ import {
 } from '../../api/models/lesson/lesson.output.model';
 
 @Injectable()
-export class UserLessonsEvaluationsQueryRepository {
+export class UserActiveLessonsEvaluationsQueryRepository {
   constructor(
     @Inject(DB_DRIZZLE)
     private db: DrizzlePgDB,

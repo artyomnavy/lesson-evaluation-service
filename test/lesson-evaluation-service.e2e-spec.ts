@@ -13,6 +13,8 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   let availableLesson1;
   let availableLesson2;
 
+  let activeLesson;
+
   beforeAll(async () => {
     const testSettings = await initTestSettings();
 
@@ -122,7 +124,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Проверяем создание доступных уроков
-  it('- POST available lesson with incorrect data', async () => {
+  it('- POST create available lesson with incorrect data', async () => {
     const createData = {
       name: true,
       code: 2,
@@ -141,7 +143,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Создание первого доступного урока
-  it('+ POST available lesson 1 with correct data', async () => {
+  it('+ POST create available lesson 1 with correct data', async () => {
     const createData = {
       name: 'Математика',
       code: 'math',
@@ -162,7 +164,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Создание первого доступного урока
-  it('+ POST available lesson 2 with correct data', async () => {
+  it('+ POST create available lesson 2 with correct data', async () => {
     const createData = {
       name: 'Музыка',
       code: 'music',
@@ -183,7 +185,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Проверяем создание реальных уроков
-  it('- POST active lesson with incorrect type userIds', async () => {
+  it('- POST create active lesson with incorrect type userIds', async () => {
     const createData = {
       availableLessonName: 'Математика',
       userIds: 2,
@@ -201,7 +203,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     });
   });
 
-  it('- POST active lesson with not exists userIds', async () => {
+  it('- POST create active lesson with not exists userIds', async () => {
     const createData = {
       availableLessonName: 'Математика',
       userIds: ['-1'],
@@ -219,7 +221,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     });
   });
 
-  it('- POST active lesson with incorrect availableLessonName', async () => {
+  it('- POST create active lesson with incorrect availableLessonName', async () => {
     const createData = {
       availableLessonName: 'test',
       userIds: [user1.id, user2.id],
@@ -238,7 +240,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Создание реального урока
-  it('+ POST active lesson with correct data', async () => {
+  it('+ POST create active lesson with correct data', async () => {
     const createData = {
       availableLessonName: availableLesson1.name,
       userIds: [user1.id, user2.id],
@@ -249,11 +251,66 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .send(createData)
       .expect(HttpStatuses.CREATED_201);
 
-    // expect(createActiveLesson.body).toStrictEqual({
-    //   message: [expect.any(String)],
-    //   error: 'Bad Request',
-    //   statusCode: HttpStatuses.BAD_REQUEST_400,
-    // });
+    expect(createActiveLesson.body).toStrictEqual({
+      id: expect.any(String),
+      name: availableLesson1.name,
+      code: availableLesson1.code,
+    });
+
+    activeLesson = createActiveLesson.body;
+  });
+
+  // Создание/добавление оценки пользователю
+  it('+ POST create evaluation with incorrect activeLessonId', async () => {
+    const createData = {
+      userId: user1.id,
+      score: '70',
+    };
+
+    const createEvaluation = await request(server)
+      .post('/api/lessons/-1/evaluations')
+      .send(createData)
+      .expect(HttpStatuses.NOT_FOUND_404);
+
+    expect(createEvaluation.body).toStrictEqual({
+      message: expect.any(String),
+      error: 'Not Found',
+      statusCode: HttpStatuses.NOT_FOUND_404,
+    });
+  });
+
+  it('+ POST create evaluation with incorrect data', async () => {
+    const createData1 = {
+      userId: '-1',
+      score: 70,
+    };
+
+    const createData2 = {
+      userId: '-1',
+      score: '70',
+    };
+
+    const createEvaluation1 = await request(server)
+      .post(`/api/lessons/${activeLesson.id}/evaluations`)
+      .send(createData1)
+      .expect(HttpStatuses.BAD_REQUEST_400);
+
+    expect(createEvaluation1.body).toStrictEqual({
+      message: [expect.any(String)],
+      error: 'Bad Request',
+      statusCode: HttpStatuses.BAD_REQUEST_400,
+    });
+
+    const createEvaluation2 = await request(server)
+      .post(`/api/lessons/${activeLesson.id}/evaluations`)
+      .send(createData2)
+      .expect(HttpStatuses.BAD_REQUEST_400);
+
+    expect(createEvaluation2.body).toStrictEqual({
+      message: [expect.any(String)],
+      error: 'Bad Request',
+      statusCode: HttpStatuses.BAD_REQUEST_400,
+    });
   });
 
   afterAll(async () => {

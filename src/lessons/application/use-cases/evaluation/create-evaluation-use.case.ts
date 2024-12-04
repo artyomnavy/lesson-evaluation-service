@@ -4,10 +4,10 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-lessons-evaluations.repository';
+import { UserActiveLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-repository.service';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { EvaluationsRepository } from '../../../infrastructure/evaluations/evaluations.repository';
-import { UserLessonsEvaluationsQueryRepository } from '../../../infrastructure/records-grade-book/user-lessons-evaluations.query-repository';
+import { UserActiveLessonsEvaluationsQueryRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-query-repository.service';
 import { EvaluationOutputModel } from '../../../api/models/evaluation/evaluation.output.model';
 import { ActiveLessonsQueryRepository } from '../../../infrastructure/active-lessons/active-lessons.query-repository';
 
@@ -23,8 +23,8 @@ export class CreateEvaluationUseCase
   implements ICommandHandler<CreateEvaluationCommand>
 {
   constructor(
-    private readonly userLessonsEvaluationsQueryRepository: UserLessonsEvaluationsQueryRepository,
-    private readonly userLessonsEvaluationsRepository: UserLessonsEvaluationsRepository,
+    private readonly userActiveLessonsEvaluationsQueryRepository: UserActiveLessonsEvaluationsQueryRepository,
+    private readonly userActiveLessonsEvaluationsRepository: UserActiveLessonsEvaluationsRepository,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly evaluationsRepository: EvaluationsRepository,
     private readonly activeLessonsQueryRepository: ActiveLessonsQueryRepository,
@@ -38,7 +38,7 @@ export class CreateEvaluationUseCase
     const user = await this.usersQueryRepository.getUserById(+userId);
 
     if (!user) {
-      throw new BadRequestException(`User is not exists`);
+      throw new BadRequestException([`User is not exists`]);
     }
 
     const activeLesson =
@@ -51,7 +51,7 @@ export class CreateEvaluationUseCase
     }
 
     const recordGradeBook =
-      await this.userLessonsEvaluationsQueryRepository.getRecordGradeBookByActiveLessonIdAndUserId(
+      await this.userActiveLessonsEvaluationsQueryRepository.getRecordGradeBookByActiveLessonIdAndUserId(
         +activeLessonId,
         +userId,
       );
@@ -67,7 +67,7 @@ export class CreateEvaluationUseCase
     const evaluation =
       await this.evaluationsRepository.createEvaluation(+score);
 
-    await this.userLessonsEvaluationsRepository.addEvaluationToRecordGradeBook(
+    await this.userActiveLessonsEvaluationsRepository.addEvaluationToRecordGradeBook(
       recordGradeBook.id,
       evaluation.id,
     );

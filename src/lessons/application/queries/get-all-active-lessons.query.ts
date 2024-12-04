@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { UserLessonsEvaluationsQueryRepository } from '../../infrastructure/records-grade-book/user-lessons-evaluations.query-repository';
+import { UserActiveLessonsEvaluationsQueryRepository } from '../../infrastructure/records-grade-book/user-active-lessons-evaluations-query-repository.service';
 import { ActiveLessonWithEvaluationsUsersOutputModel } from '../../api/models/lesson/lesson.output.model';
 
 export class GetAllActiveLessonsQuery {
@@ -10,7 +10,7 @@ export class GetAllUsersQueryHandler
   implements IQueryHandler<GetAllActiveLessonsQuery>
 {
   constructor(
-    private readonly userLessonsEvaluationsQueryRepository: UserLessonsEvaluationsQueryRepository,
+    private readonly userLessonsEvaluationsQueryRepository: UserActiveLessonsEvaluationsQueryRepository,
   ) {}
 
   async execute(): Promise<ActiveLessonWithEvaluationsUsersOutputModel[]> {
