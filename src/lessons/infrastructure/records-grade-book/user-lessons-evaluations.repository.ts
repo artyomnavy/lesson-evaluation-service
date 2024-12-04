@@ -27,7 +27,7 @@ export class UserLessonsEvaluationsRepository {
     }
   }
 
-  async addEvaluationToActiveLesson(id: number, evaluationId: number) {
+  async addEvaluationToRecordGradeBook(id: number, evaluationId: number) {
     try {
       const result = await this.db
         .update(userLessonsEvaluationsTable)
@@ -38,8 +38,8 @@ export class UserLessonsEvaluationsRepository {
 
       return result[0];
     } catch (error) {
-      console.error('Error add evaluation to active lesson:', error);
-      throw new Error('Evaluation not add to active lesson');
+      console.error('Error add evaluation to record grade book:', error);
+      throw new Error('Evaluation not add to record grade book');
     }
   }
 }

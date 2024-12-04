@@ -20,8 +20,8 @@ export class TestController {
   async deleteAllData() {
     await this.db.delete(userLessonsEvaluationsTable);
     await this.db.delete(usersTable);
-    await this.db.delete(lessonsTable);
     await this.db.delete(activeLessonsTable);
+    await this.db.delete(lessonsTable);
     await this.db.delete(evaluationsTable);
     return;
   }

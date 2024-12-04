@@ -59,16 +59,16 @@ export class LessonsController {
     );
   }
 
-  @Post(':lessonId/evaluations')
+  @Post(':activeLessonId/evaluations')
   @HttpCode(HttpStatuses.CREATED_201)
   async createEvaluation(
-    @Param('lessonId') lessonId: string,
+    @Param('activeLessonId') activeLessonId: string,
     @Body() createModel: CreateEvaluationModel,
   ): Promise<EvaluationOutputModel> {
     const { userId, score } = createModel;
 
     return await this.commandBus.execute(
-      new CreateEvaluationCommand(lessonId, userId, score),
+      new CreateEvaluationCommand(activeLessonId, userId, score),
     );
   }
 }

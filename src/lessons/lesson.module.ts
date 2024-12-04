@@ -6,13 +6,14 @@ import { DrizzleModule } from '../common/infrastructure/drizzle/drizzle.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { Module } from '@nestjs/common';
 import { CreateActiveLessonAndRecordsToGradeBookUseCase } from './application/use-cases/lesson/create-active-lesson-and-records-to-grade-book.use-case';
-import { UserLessonsEvaluationsRepository } from './infrastructure/records-to-grade-book/user-lessons-evaluations.repository';
+import { UserLessonsEvaluationsRepository } from './infrastructure/records-grade-book/user-lessons-evaluations.repository';
 import { CreateEvaluationUseCase } from './application/use-cases/evaluation/create-evaluation-use.case';
-import { UserLessonsEvaluationsQueryRepository } from './infrastructure/records-to-grade-book/user-lessons-evaluations.query-repository';
+import { UserLessonsEvaluationsQueryRepository } from './infrastructure/records-grade-book/user-lessons-evaluations.query-repository';
 import { EvaluationsRepository } from './infrastructure/evaluations/evaluations.repository';
 import { UsersQueryRepository } from '../users/infrastructure/users.query-repository';
 import { GetAllUsersQueryHandler } from './application/queries/get-all-active-lessons.query';
 import { ActiveLessonsRepository } from './infrastructure/active-lessons/active-lessons.repository';
+import { ActiveLessonsQueryRepository } from './infrastructure/active-lessons/active-lessons.query-repository';
 
 const lessonsControllers = [LessonsController];
 
@@ -25,7 +26,10 @@ const lessonsQueries = [GetAllUsersQueryHandler];
 
 const evaluationsUseCases = [CreateEvaluationUseCase];
 
-const activeLessonsRepositories = [ActiveLessonsRepository];
+const activeLessonsRepositories = [
+  ActiveLessonsRepository,
+  ActiveLessonsQueryRepository,
+];
 
 const recordsToGradeBookRepositories = [
   UserLessonsEvaluationsRepository,

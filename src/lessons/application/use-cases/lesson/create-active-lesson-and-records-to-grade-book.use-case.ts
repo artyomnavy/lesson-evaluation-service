@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
 import { LessonOutputModel } from '../../../api/models/lesson/lesson.output.model';
-import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-to-grade-book/user-lessons-evaluations.repository';
+import { UserLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-lessons-evaluations.repository';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { ActiveLessonsRepository } from '../../../infrastructure/active-lessons/active-lessons.repository';
 
@@ -49,13 +49,13 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
       availableLesson.id,
     );
 
-    const recordsToGradeBook = userIds.map((userId) => ({
+    const recordsGradeBook = userIds.map((userId) => ({
       userId: +userId,
       activeLessonId: activeLesson.id,
     }));
 
     await this.userLessonsEvaluationsRepository.createRecordsToGradeBook(
-      recordsToGradeBook,
+      recordsGradeBook,
     );
 
     return {

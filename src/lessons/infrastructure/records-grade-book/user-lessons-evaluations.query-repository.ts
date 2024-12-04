@@ -3,8 +3,8 @@ import { DB_DRIZZLE } from '../../../common/infrastructure/drizzle/drizzle.modul
 import { Inject, Injectable } from '@nestjs/common';
 import { userLessonsEvaluationsTable } from '../../../common/infrastructure/drizzle/schemas/user-lessons-evaluations.schema';
 import {
-  ActiveLesson,
   ActiveLessonWithEvaluationsUsersOutputModel,
+  RecordGradeBookModel,
 } from '../../api/models/lesson/lesson.output.model';
 
 @Injectable()
@@ -14,21 +14,21 @@ export class UserLessonsEvaluationsQueryRepository {
     private db: DrizzlePgDB,
   ) {}
 
-  async getActiveLessonByAvailableLessonIdAndUserId(
-    lessonId: number,
+  async getRecordGradeBookByActiveLessonIdAndUserId(
+    activeLessonId: number,
     userId: number,
-  ): Promise<ActiveLesson | null> {
-    const lesson: ActiveLesson = await this.db
+  ): Promise<RecordGradeBookModel | null> {
+    const record = await this.db
       .query(userLessonsEvaluationsTable)
-      .findFirst<ActiveLesson>({
-        where: { lessonId: lessonId },
+      .findFirst<RecordGradeBookModel>({
+        where: { activeLessonId: activeLessonId },
         andWhere: { userId: userId },
       });
 
-    if (!lesson) {
+    if (!record) {
       return null;
     } else {
-      return lesson;
+      return record;
     }
   }
 

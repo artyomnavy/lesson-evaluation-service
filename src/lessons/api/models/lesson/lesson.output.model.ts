@@ -13,8 +13,14 @@ export class LessonOutputModel {
 export class ActiveLesson {
   id: number;
   lessonId: number;
+}
+
+export class RecordGradeBookModel {
+  id: number;
   userId: number;
-  evaluationId: number | null;
+  activeLessonId: number;
+  evaluationId: number;
+  createdAt: Date;
 }
 
 export class ActiveLessonWithEvaluationsUsersOutputModel {
