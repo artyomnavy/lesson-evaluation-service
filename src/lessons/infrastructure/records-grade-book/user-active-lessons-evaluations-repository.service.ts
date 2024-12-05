@@ -1,7 +1,7 @@
 import { DrizzlePgDB } from '../../../common/infrastructure/drizzle/drizzle';
 import { DB_DRIZZLE } from '../../../common/infrastructure/drizzle/drizzle.module';
 import { Inject, Injectable } from '@nestjs/common';
-import { userLessonsEvaluationsTable } from '../../../common/infrastructure/drizzle/schemas/user-lessons-evaluations.schema';
+import { userActiveLessonsEvaluationsTable } from '../../../common/infrastructure/drizzle/schemas/user-active-lessons-evaluations.schema';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class UserActiveLessonsEvaluationsRepository {
   ) {
     try {
       const result = await this.db
-        .insert(userLessonsEvaluationsTable)
+        .insert(userActiveLessonsEvaluationsTable)
         .values(recordsToGradeBook)
         .returning();
 
@@ -30,10 +30,10 @@ export class UserActiveLessonsEvaluationsRepository {
   async addEvaluationToRecordGradeBook(id: number, evaluationId: number) {
     try {
       const result = await this.db
-        .update(userLessonsEvaluationsTable)
-        // .set({ [userLessonsEvaluationsTable.evaluationId.name]: evaluationId })
+        .update(userActiveLessonsEvaluationsTable)
+        // .set({ [userActiveLessonsEvaluationsTable.evaluationId.name]: evaluationId })
         .set({ evaluationId: evaluationId })
-        .where(eq(userLessonsEvaluationsTable.id, id))
+        .where(eq(userActiveLessonsEvaluationsTable.id, id))
         .returning();
 
       return result[0];

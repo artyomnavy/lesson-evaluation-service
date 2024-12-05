@@ -5,7 +5,7 @@ import { DrizzlePgDB } from '../infrastructure/drizzle/drizzle';
 import { usersTable } from '../infrastructure/drizzle/schemas/users.schema';
 import { lessonsTable } from '../infrastructure/drizzle/schemas/lessons.schema';
 import { evaluationsTable } from '../infrastructure/drizzle/schemas/evaluations.schema';
-import { userLessonsEvaluationsTable } from '../infrastructure/drizzle/schemas/user-lessons-evaluations.schema';
+import { userActiveLessonsEvaluationsTable } from '../infrastructure/drizzle/schemas/user-active-lessons-evaluations.schema';
 import { activeLessonsTable } from '../infrastructure/drizzle/schemas/active-lessons.schema';
 
 @Controller('api/testing')
@@ -18,7 +18,7 @@ export class TestController {
   @Delete('all-data')
   @HttpCode(HttpStatuses.NO_CONTENT_204)
   async deleteAllData() {
-    await this.db.delete(userLessonsEvaluationsTable);
+    await this.db.delete(userActiveLessonsEvaluationsTable);
     await this.db.delete(usersTable);
     await this.db.delete(activeLessonsTable);
     await this.db.delete(lessonsTable);

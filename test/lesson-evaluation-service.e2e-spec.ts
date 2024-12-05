@@ -261,7 +261,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
   });
 
   // Создание/добавление оценки пользователю
-  it('+ POST create evaluation with incorrect activeLessonId', async () => {
+  it('- POST create evaluation with incorrect activeLessonId', async () => {
     const createData = {
       userId: user1.id,
       score: '70',
@@ -279,7 +279,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     });
   });
 
-  it('+ POST create evaluation with incorrect data', async () => {
+  it('- POST create evaluation with incorrect data', async () => {
     const createData1 = {
       userId: '-1',
       score: 70,
@@ -310,6 +310,24 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       message: [expect.any(String)],
       error: 'Bad Request',
       statusCode: HttpStatuses.BAD_REQUEST_400,
+    });
+  });
+
+  it('+ POST create evaluation with correct data', async () => {
+    const createData = {
+      userId: user1.id,
+      score: '70',
+    };
+
+    const createEvaluation = await request(server)
+      .post(`/api/lessons/${activeLesson.id}/evaluations`)
+      .send(createData)
+      .expect(HttpStatuses.CREATED_201);
+
+    expect(createEvaluation.body).toStrictEqual({
+      id: expect.any(String),
+      userId: createData.userId,
+      score: createData.score,
     });
   });
 
