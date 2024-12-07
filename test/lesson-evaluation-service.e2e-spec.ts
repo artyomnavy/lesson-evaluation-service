@@ -313,7 +313,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     });
   });
 
-  it('+ POST create evaluation with correct data', async () => {
+  it('+ POST create evaluation for user1 with correct data', async () => {
     const createData = {
       userId: user1.id,
       score: '70',
@@ -329,6 +329,31 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       userId: createData.userId,
       score: createData.score,
     });
+  });
+
+  it('+ GET found all active lessons with evaluations users', async () => {
+    const foundEvaluation = await request(server)
+      .get(`/api/lessons`)
+      .expect(HttpStatuses.OK_200);
+
+    expect(foundEvaluation.body).toStrictEqual([
+      {
+        id: expect.any(String),
+        name: activeLesson.name,
+        code: activeLesson.code,
+        evaluations: [
+          {
+            id: expect.any(String),
+            score: '70',
+            user: {
+              id: user1.id,
+              name: user1.name,
+              email: user1.email,
+            },
+          },
+        ],
+      },
+    ]);
   });
 
   afterAll(async () => {
