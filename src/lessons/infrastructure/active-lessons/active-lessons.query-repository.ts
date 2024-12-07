@@ -62,11 +62,9 @@ export class ActiveLessonsQueryRepository {
 
     const result = await this.db.execute(rawQuery);
 
-    const view = await Promise.all(
+    return await Promise.all(
       result.rows.map((activeLesson) => this.activeLessonMapper(activeLesson)),
     );
-
-    return view;
   }
 
   async activeLessonMapper(activeLesson) {
