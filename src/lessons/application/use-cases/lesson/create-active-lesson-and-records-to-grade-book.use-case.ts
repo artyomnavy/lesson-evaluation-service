@@ -34,14 +34,20 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
       );
 
     if (!availableLesson) {
-      throw new BadRequestException([`Available lesson is not exists`]);
+      throw new BadRequestException({
+        field: 'availableLessonName',
+        message: 'Available lesson is not exists',
+      });
     }
 
     for (const userId of userIds) {
       const user = await this.usersQueryRepository.getUserById(+userId);
 
       if (!user) {
-        throw new BadRequestException([`User with id=${userId} is not exists`]);
+        throw new BadRequestException({
+          field: 'userIds',
+          message: `User with id=${userId} is not exists`,
+        });
       }
     }
 

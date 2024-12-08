@@ -11,16 +11,11 @@ export class EvaluationsRepository {
   ) {}
 
   async createEvaluation(score: number) {
-    try {
-      const evaluations = await this.db
-        .insert(evaluationsTable)
-        .values({ score: score })
-        .returning();
+    const evaluations = await this.db
+      .insert(evaluationsTable)
+      .values({ score: score })
+      .returning();
 
-      return evaluations[0];
-    } catch (error) {
-      console.error('Error create evaluation:', error);
-      throw new Error('Evaluation not create');
-    }
+    return evaluations[0];
   }
 }

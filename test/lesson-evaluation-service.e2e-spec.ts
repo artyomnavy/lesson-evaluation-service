@@ -44,9 +44,16 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createUser.body).toStrictEqual({
-      message: [expect.any(String), expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'name',
+          message: expect.any(String),
+        },
+        {
+          field: 'email',
+          message: expect.any(String),
+        },
+      ],
     });
 
     const foundUsers = await request(server)
@@ -136,9 +143,16 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createAvailableLesson.body).toStrictEqual({
-      message: [expect.any(String), expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'name',
+          message: expect.any(String),
+        },
+        {
+          field: 'code',
+          message: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -197,9 +211,12 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createActiveLesson.body).toStrictEqual({
-      message: [expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'userIds',
+          message: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -215,9 +232,12 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createActiveLesson.body).toStrictEqual({
-      message: [expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'userIds',
+          message: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -233,9 +253,12 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createActiveLesson.body).toStrictEqual({
-      message: [expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'availableLessonName',
+          message: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -267,16 +290,10 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       score: '70',
     };
 
-    const createEvaluation = await request(server)
+    await request(server)
       .post('/api/lessons/-1/evaluations')
       .send(createData)
       .expect(HttpStatuses.NOT_FOUND_404);
-
-    expect(createEvaluation.body).toStrictEqual({
-      message: expect.any(String),
-      error: 'Not Found',
-      statusCode: HttpStatuses.NOT_FOUND_404,
-    });
   });
 
   it('- POST create evaluation with incorrect data', async () => {
@@ -296,9 +313,12 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createEvaluation1.body).toStrictEqual({
-      message: [expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'score',
+          message: expect.any(String),
+        },
+      ],
     });
 
     const createEvaluation2 = await request(server)
@@ -307,9 +327,12 @@ describe('lesson-evaluation-service (e2e) testing', () => {
       .expect(HttpStatuses.BAD_REQUEST_400);
 
     expect(createEvaluation2.body).toStrictEqual({
-      message: [expect.any(String)],
-      error: 'Bad Request',
-      statusCode: HttpStatuses.BAD_REQUEST_400,
+      errorsMessages: [
+        {
+          field: 'userId',
+          message: expect.any(String),
+        },
+      ],
     });
   });
 

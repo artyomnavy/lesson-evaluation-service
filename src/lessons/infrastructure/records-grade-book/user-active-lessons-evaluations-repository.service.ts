@@ -14,32 +14,22 @@ export class UserActiveLessonsEvaluationsRepository {
   async createRecordsToGradeBook(
     recordsToGradeBook: { userId: number; activeLessonId: number }[],
   ) {
-    try {
-      const result = await this.db
-        .insert(userActiveLessonsEvaluationsTable)
-        .values(recordsToGradeBook)
-        .returning();
+    const result = await this.db
+      .insert(userActiveLessonsEvaluationsTable)
+      .values(recordsToGradeBook)
+      .returning();
 
-      return result;
-    } catch (error) {
-      console.error('Error create records to grade book:', error);
-      throw new Error('Records to grade book not create');
-    }
+    return result;
   }
 
   async addEvaluationToRecordGradeBook(id: number, evaluationId: number) {
-    try {
-      const result = await this.db
-        .update(userActiveLessonsEvaluationsTable)
-        // .set({ [userActiveLessonsEvaluationsTable.evaluationId.name]: evaluationId })
-        .set({ evaluationId: evaluationId })
-        .where(eq(userActiveLessonsEvaluationsTable.id, id))
-        .returning();
+    const result = await this.db
+      .update(userActiveLessonsEvaluationsTable)
+      // .set({ [userActiveLessonsEvaluationsTable.evaluationId.name]: evaluationId })
+      .set({ evaluationId: evaluationId })
+      .where(eq(userActiveLessonsEvaluationsTable.id, id))
+      .returning();
 
-      return result[0];
-    } catch (error) {
-      console.error('Error add evaluation to record grade book:', error);
-      throw new Error('Evaluation not add to record grade book');
-    }
+    return result[0];
   }
 }

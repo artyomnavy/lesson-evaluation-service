@@ -12,20 +12,15 @@ export class UsersRepository {
   ) {}
 
   async createUser(name: string, email: string): Promise<UserOutputModel> {
-    try {
-      const result = await this.db
-        .insert(usersTable)
-        .values({ name: name, email: email })
-        .returning();
+    const result = await this.db
+      .insert(usersTable)
+      .values({ name: name, email: email })
+      .returning();
 
-      return {
-        id: result[0].id.toString(),
-        name: result[0].name,
-        email: result[0].email,
-      };
-    } catch (error) {
-      console.error('Error create user:', error);
-      throw new Error('User not create');
-    }
+    return {
+      id: result[0].id.toString(),
+      name: result[0].name,
+      email: result[0].email,
+    };
   }
 }

@@ -15,16 +15,11 @@ export class LessonsRepository {
     name: string,
     code: string,
   ): Promise<AvailableLessonOutputModel> {
-    try {
-      const result = await this.db
-        .insert(lessonsTable)
-        .values({ name: name, code: code })
-        .returning();
+    const result = await this.db
+      .insert(lessonsTable)
+      .values({ name: name, code: code })
+      .returning();
 
-      return result[0];
-    } catch (error) {
-      console.error('Error create available lesson:', error);
-      throw new Error('Available lesson not create');
-    }
+    return result[0];
   }
 }

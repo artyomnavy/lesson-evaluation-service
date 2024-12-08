@@ -23,7 +23,10 @@ export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
     const isEmailExist = await this.usersQueryRepository.isEmailExist(email);
 
     if (isEmailExist) {
-      throw new BadRequestException(`Email already exists: ${email}`);
+      throw new BadRequestException({
+        field: 'email',
+        message: `Email already exists: ${email}`,
+      });
     }
 
     return await this.usersRepository.createUser(name, email);

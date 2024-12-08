@@ -38,7 +38,10 @@ export class CreateEvaluationUseCase
     const user = await this.usersQueryRepository.getUserById(+userId);
 
     if (!user) {
-      throw new BadRequestException([`User is not exists`]);
+      throw new BadRequestException({
+        field: 'userId',
+        message: 'User is not exists',
+      });
     }
 
     const activeLesson =

@@ -2,7 +2,10 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { HttpStatuses } from '../src/common/utils';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { ValidationError } from '@nestjs/common/interfaces/external/validation-error.interface';
+import { ErrorMessageType } from '../src/common/types';
+import { HttpExceptionFilter } from '../src/common/exceptions/http.exception-filter';
 
 export const initTestSettings = async (
   addSettingsToModuleBuilder?: (moduleBuilder: TestingModuleBuilder) => void,
@@ -24,8 +27,25 @@ export const initTestSettings = async (
       transform: true,
       forbidNonWhitelisted: true,
       stopAtFirstError: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        const errorsForResponse: ErrorMessageType[] = [];
+
+        errors.forEach((e) => {
+          const constraintKeys = Object.keys(e.constraints ?? {});
+
+          constraintKeys.forEach((cKey) => {
+            errorsForResponse.push({
+              field: e.property,
+              message: e.constraints?.[cKey] ?? '',
+            });
+          });
+        });
+        throw new BadRequestException(errorsForResponse);
+      },
     }),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.init();
 
