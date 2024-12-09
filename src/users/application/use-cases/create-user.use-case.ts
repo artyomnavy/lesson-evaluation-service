@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserOutputModel } from '../../api/models/user.output.model';
 import { UsersRepository } from '../../infrastructure/users.repository';
 import { UsersQueryRepository } from '../../infrastructure/users.query-repository';
-import { BadRequestException } from '@nestjs/common';
 import { ResultType } from '../../../common/types';
 import { ResultCodes } from '../../../common/utils';
 
