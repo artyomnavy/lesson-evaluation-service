@@ -1,15 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
 import { UserActiveLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-repository.service';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { EvaluationsRepository } from '../../../infrastructure/evaluations/evaluations.repository';
 import { UserActiveLessonsEvaluationsQueryRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-query-repository.service';
 import { EvaluationOutputModel } from '../../../api/models/evaluation/evaluation.output.model';
 import { ActiveLessonsQueryRepository } from '../../../infrastructure/active-lessons/active-lessons.query-repository';
+import { ResultType } from '../../../../common/types';
+import { ResultCodes } from '../../../../common/utils';
 
 export class CreateEvaluationCommand {
   constructor(
@@ -32,16 +29,18 @@ export class CreateEvaluationUseCase
 
   async execute(
     command: CreateEvaluationCommand,
-  ): Promise<EvaluationOutputModel> {
+  ): Promise<ResultType<EvaluationOutputModel | null>> {
     const { activeLessonId, userId, score } = command;
 
     const user = await this.usersQueryRepository.getUserById(+userId);
 
     if (!user) {
-      throw new BadRequestException({
-        field: 'userId',
+      return {
+        data: null,
+        code: ResultCodes.BAD_REQUEST,
         message: 'User is not exists',
-      });
+        field: 'userId',
+      };
     }
 
     const activeLesson =
@@ -50,7 +49,11 @@ export class CreateEvaluationUseCase
       );
 
     if (!activeLesson) {
-      throw new NotFoundException(`Active lesson is not found`);
+      return {
+        data: null,
+        code: ResultCodes.NOT_FOUND,
+        message: 'Active lesson is not found',
+      };
     }
 
     const recordGradeBook =
@@ -60,11 +63,19 @@ export class CreateEvaluationUseCase
       );
 
     if (!recordGradeBook) {
-      throw new NotFoundException(`User is not found in active lesson `);
+      return {
+        data: null,
+        code: ResultCodes.NOT_FOUND,
+        message: 'User is not found in active lesson',
+      };
     }
 
     if (recordGradeBook.evaluationId !== null) {
-      throw new ConflictException('Evaluation is exists');
+      return {
+        data: null,
+        code: ResultCodes.CONFLICT,
+        message: 'Evaluation is exists',
+      };
     }
 
     const evaluation =
@@ -76,9 +87,12 @@ export class CreateEvaluationUseCase
     );
 
     return {
-      id: evaluation.id.toString(),
-      userId: user.id.toString(),
-      score: evaluation.score!.toString(),
+      data: {
+        id: evaluation.id.toString(),
+        userId: user.id.toString(),
+        score: evaluation.score!.toString(),
+      },
+      code: ResultCodes.SUCCESS,
     };
   }
 }

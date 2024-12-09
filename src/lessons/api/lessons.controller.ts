@@ -1,6 +1,10 @@
 import { Param, Body, Controller, HttpCode, Post, Get } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { HttpStatuses } from '../../common/utils';
+import {
+  HttpStatuses,
+  ResultCodes,
+  resultCodeToHttpException,
+} from '../../common/utils';
 import {
   CreateActiveLessonModel,
   CreateAvailableLessonModel,
@@ -39,9 +43,15 @@ export class LessonsController {
   ): Promise<AvailableLessonOutputModel> {
     const { name, code } = createModel;
 
-    return await this.commandBus.execute(
+    const result = await this.commandBus.execute(
       new CreateAvailableLessonCommand(name, code),
     );
+
+    if (result.code !== ResultCodes.SUCCESS) {
+      resultCodeToHttpException(result.code, result.message, result.field);
+    }
+
+    return result.data;
   }
 
   @Post()
@@ -51,12 +61,18 @@ export class LessonsController {
   ): Promise<LessonOutputModel> {
     const { availableLessonName, userIds } = createModel;
 
-    return await this.commandBus.execute(
+    const result = await this.commandBus.execute(
       new CreateActiveLessonAndRecordsToGradeBookCommand(
         availableLessonName,
         userIds,
       ),
     );
+
+    if (result.code !== ResultCodes.SUCCESS) {
+      resultCodeToHttpException(result.code, result.message, result.field);
+    }
+
+    return result.data;
   }
 
   @Post(':activeLessonId/evaluations')
@@ -67,8 +83,14 @@ export class LessonsController {
   ): Promise<EvaluationOutputModel> {
     const { userId, score } = createModel;
 
-    return await this.commandBus.execute(
+    const result = await this.commandBus.execute(
       new CreateEvaluationCommand(activeLessonId, userId, score),
     );
+
+    if (result.code !== ResultCodes.SUCCESS) {
+      resultCodeToHttpException(result.code, result.message, result.field);
+    }
+
+    return result.data;
   }
 }

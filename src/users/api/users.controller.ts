@@ -4,7 +4,11 @@ import { GetAllUsersQuery } from '../application/queries/get-all-users.query';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateUserModel } from './models/user.input.model';
 import { CreateUserCommand } from '../application/use-cases/create-user.use-case';
-import { HttpStatuses } from '../../common/utils';
+import {
+  HttpStatuses,
+  ResultCodes,
+  resultCodeToHttpException,
+} from '../../common/utils';
 
 @Controller('api/users')
 export class UsersController {
@@ -26,6 +30,14 @@ export class UsersController {
   ): Promise<UserOutputModel> {
     const { name, email } = createModel;
 
-    return await this.commandBus.execute(new CreateUserCommand(name, email));
+    const result = await this.commandBus.execute(
+      new CreateUserCommand(name, email),
+    );
+
+    if (result.code !== ResultCodes.SUCCESS) {
+      resultCodeToHttpException(result.code, result.message, result.field);
+    }
+
+    return result.data;
   }
 }

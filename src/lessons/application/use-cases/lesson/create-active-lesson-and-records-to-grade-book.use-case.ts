@@ -1,10 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException } from '@nestjs/common';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
 import { LessonOutputModel } from '../../../api/models/lesson/lesson.output.model';
 import { UserActiveLessonsEvaluationsRepository } from '../../../infrastructure/records-grade-book/user-active-lessons-evaluations-repository.service';
 import { UsersQueryRepository } from '../../../../users/infrastructure/users.query-repository';
 import { ActiveLessonsRepository } from '../../../infrastructure/active-lessons/active-lessons.repository';
+import { ResultType } from '../../../../common/types';
+import { ResultCodes } from '../../../../common/utils';
 
 export class CreateActiveLessonAndRecordsToGradeBookCommand {
   constructor(
@@ -25,7 +26,7 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
 
   async execute(
     command: CreateActiveLessonAndRecordsToGradeBookCommand,
-  ): Promise<LessonOutputModel> {
+  ): Promise<ResultType<LessonOutputModel | null>> {
     const { availableLessonName, userIds } = command;
 
     const availableLesson =
@@ -34,20 +35,24 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
       );
 
     if (!availableLesson) {
-      throw new BadRequestException({
-        field: 'availableLessonName',
+      return {
+        data: null,
+        code: ResultCodes.BAD_REQUEST,
         message: 'Available lesson is not exists',
-      });
+        field: 'availableLessonName',
+      };
     }
 
     for (const userId of userIds) {
       const user = await this.usersQueryRepository.getUserById(+userId);
 
       if (!user) {
-        throw new BadRequestException({
-          field: 'userIds',
+        return {
+          data: null,
+          code: ResultCodes.BAD_REQUEST,
           message: `User with id=${userId} is not exists`,
-        });
+          field: 'userIds',
+        };
       }
     }
 
@@ -65,9 +70,12 @@ export class CreateActiveLessonAndRecordsToGradeBookUseCase
     );
 
     return {
-      id: activeLesson.id.toString(),
-      name: availableLesson.name,
-      code: availableLesson.code,
+      data: {
+        id: activeLesson.id.toString(),
+        name: availableLesson.name,
+        code: availableLesson.code,
+      },
+      code: ResultCodes.SUCCESS,
     };
   }
 }

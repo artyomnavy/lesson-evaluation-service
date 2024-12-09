@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException } from '@nestjs/common';
 import { LessonsRepository } from '../../../infrastructure/available-lessons/lessons.repository';
 import { LessonsQueryRepository } from '../../../infrastructure/available-lessons/lessons.query-repository';
 import { AvailableLessonOutputModel } from '../../../api/models/lesson/lesson.output.model';
+import { ResultType } from '../../../../common/types';
+import { ResultCodes } from '../../../../common/utils';
 
 export class CreateAvailableLessonCommand {
   constructor(
@@ -21,16 +22,29 @@ export class CreateAvailableLessonUseCase
 
   async execute(
     command: CreateAvailableLessonCommand,
-  ): Promise<AvailableLessonOutputModel> {
+  ): Promise<ResultType<AvailableLessonOutputModel | null>> {
     const { name, code } = command;
 
     const isAvailableLessonExist =
       await this.lessonsQueryRepository.isAvailableLessonExist(name, code);
 
     if (isAvailableLessonExist) {
-      throw new BadRequestException(`Available lesson already exists`);
+      return {
+        data: null,
+        code: ResultCodes.BAD_REQUEST,
+        message: 'Available lesson already exists',
+        field: 'availableLessonName',
+      };
     }
 
-    return await this.lessonsRepository.createAvailableLesson(name, code);
+    const availableLesson = await this.lessonsRepository.createAvailableLesson(
+      name,
+      code,
+    );
+
+    return {
+      data: availableLesson,
+      code: ResultCodes.SUCCESS,
+    };
   }
 }
