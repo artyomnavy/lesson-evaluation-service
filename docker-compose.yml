@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Название сервиса
+  db:
+    # Образ
+    image: postgres
+    # Политика перезапуска
+    restart: always
+    # env переменные
+    # Можно выгрузить из файла
+    # env_file:
+    #  - .env
+    environment:
+      - POSTGRES_PASSWORD=password
+    # Название контейнера
+    container_name: postgres
+    # Тома для постоянного хранения данных (при пересборке не удаляется)
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    # Порт по которому мы сможем обращаться к приложению: порт приложения внутри контейнера
+    ports:
+      - '5432:5432'
+    # Сети к которым подключен контейнер
+    networks:
+      - lesson-evaluation-service-docker-network
+  # Название сервиса
+  app:
+    # Указывает конфигурацию сборки для создания образа контейнера из исходного кода
+    build:
+      # Определяет либо путь к каталогу, содержащему файл Dockerfile, либо URL-адрес репозитория git
+      context: .
+      # Название файла Dockerfile (Dockerfile.production)
+      dockerfile: Dockerfile
+    # Название контейнера
+    container_name: lesson-evaluation-service-docker-image
+    # env переменные
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_PASSWORD=password
+      - APP_PORT=9876
+    # Порт по которому мы сможем обращаться к приложению: порт приложения внутри контейнера
+    ports:
+      - '9876:9876'
+    # Определяем порядок запуска (app запуститься после db)
+    depends_on:
+      - db
+    # Тома для постоянного хранения данных (при пересборке не удаляется)
+    volumes:
+      - ./src:/app/src
+    # Сети к которым подключен контейнер
+    networks:
+      - lesson-evaluation-service-docker-network
+# Определяем сеть для наших контейнеров
+networks:
+  lesson-evaluation-service-docker-network:
+    driver: bridge
+
+# Для запуска используем docker-compose up
