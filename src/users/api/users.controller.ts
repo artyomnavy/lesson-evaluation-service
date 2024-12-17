@@ -9,7 +9,15 @@ import {
   ResultCodes,
   resultCodeToHttpException,
 } from '../../common/utils';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('api/users')
 export class UsersController {
   constructor(
@@ -18,12 +26,33 @@ export class UsersController {
   ) {}
 
   @Get()
+  @ApiOkResponse({ description: 'Success', type: [UserOutputModel] })
   @HttpCode(HttpStatuses.OK_200)
   async getAllUsers(): Promise<UserOutputModel[]> {
     return await this.queryBus.execute(new GetAllUsersQuery());
   }
 
   @Post()
+  @ApiBody({ type: CreateUserModel })
+  @ApiCreatedResponse({ description: 'Created user', type: UserOutputModel })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: {
+      type: 'object',
+      properties: {
+        errorsMessages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              message: { type: 'string' },
+              field: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  })
   @HttpCode(HttpStatuses.CREATED_201)
   async createUser(
     @Body() createModel: CreateUserModel,

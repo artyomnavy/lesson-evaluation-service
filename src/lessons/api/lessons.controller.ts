@@ -20,7 +20,17 @@ import { CreateEvaluationModel } from './models/evaluation/evaluation.input.mode
 import { EvaluationOutputModel } from './models/evaluation/evaluation.output.model';
 import { CreateEvaluationCommand } from '../application/use-cases/evaluation/create-evaluation-use.case';
 import { GetAllActiveLessonsQuery } from '../application/queries/get-all-active-lessons.query';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('lessons')
 @Controller('api/lessons')
 export class LessonsController {
   constructor(
@@ -29,6 +39,10 @@ export class LessonsController {
   ) {}
 
   @Get()
+  @ApiOkResponse({
+    description: 'Success',
+    type: [ActiveLessonWithEvaluationsUsersOutputModel],
+  })
   @HttpCode(HttpStatuses.OK_200)
   async getAllActiveLessons(): Promise<
     ActiveLessonWithEvaluationsUsersOutputModel[]
@@ -37,6 +51,29 @@ export class LessonsController {
   }
 
   @Post('available')
+  @ApiCreatedResponse({
+    description: 'Created available lesson',
+    type: AvailableLessonOutputModel,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: {
+      type: 'object',
+      properties: {
+        errorsMessages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              message: { type: 'string' },
+              field: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiBody({ type: CreateAvailableLessonModel })
   @HttpCode(HttpStatuses.CREATED_201)
   async createAvailableLesson(
     @Body() createModel: CreateAvailableLessonModel,
@@ -55,6 +92,29 @@ export class LessonsController {
   }
 
   @Post()
+  @ApiCreatedResponse({
+    description: 'Created active lesson',
+    type: LessonOutputModel,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: {
+      type: 'object',
+      properties: {
+        errorsMessages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              message: { type: 'string' },
+              field: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiBody({ type: CreateActiveLessonModel })
   @HttpCode(HttpStatuses.CREATED_201)
   async createActiveLessonAndRecordsToGradeBook(
     @Body() createModel: CreateActiveLessonModel,
@@ -76,6 +136,31 @@ export class LessonsController {
   }
 
   @Post(':activeLessonId/evaluations')
+  @ApiCreatedResponse({
+    description: 'Created evaluation',
+    type: EvaluationOutputModel,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    schema: {
+      type: 'object',
+      properties: {
+        errorsMessages: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              message: { type: 'string' },
+              field: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({ description: 'Not found active lesson or user' })
+  @ApiConflictResponse({ description: 'Evaluation is exists' })
+  @ApiBody({ type: CreateEvaluationModel })
   @HttpCode(HttpStatuses.CREATED_201)
   async createEvaluation(
     @Param('activeLessonId') activeLessonId: string,

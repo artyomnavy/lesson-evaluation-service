@@ -7,6 +7,7 @@ import { lessonsTable } from '../infrastructure/drizzle/schemas/lessons.schema';
 import { evaluationsTable } from '../infrastructure/drizzle/schemas/evaluations.schema';
 import { userActiveLessonsEvaluationsTable } from '../infrastructure/drizzle/schemas/user-active-lessons-evaluations.schema';
 import { activeLessonsTable } from '../infrastructure/drizzle/schemas/active-lessons.schema';
+import { ApiNoContentResponse } from '@nestjs/swagger';
 
 @Controller('api/testing')
 export class TestController {
@@ -16,6 +17,7 @@ export class TestController {
   ) {}
 
   @Delete('all-data')
+  @ApiNoContentResponse({ description: 'All data is deleted' })
   @HttpCode(HttpStatuses.NO_CONTENT_204)
   async deleteAllData() {
     await this.db.delete(userActiveLessonsEvaluationsTable);
