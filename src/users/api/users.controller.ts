@@ -14,10 +14,11 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
   constructor(
@@ -26,6 +27,7 @@ export class UsersController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Returns all users' })
   @ApiOkResponse({ description: 'Success', type: [UserOutputModel] })
   @HttpCode(HttpStatuses.OK_200)
   async getAllUsers(): Promise<UserOutputModel[]> {
@@ -33,8 +35,9 @@ export class UsersController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create new user' })
   @ApiBody({ type: CreateUserModel })
-  @ApiCreatedResponse({ description: 'Created user', type: UserOutputModel })
+  @ApiCreatedResponse({ description: 'Created', type: UserOutputModel })
   @ApiBadRequestResponse({
     description: 'Bad request',
     schema: {

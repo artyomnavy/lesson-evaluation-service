@@ -7,8 +7,9 @@ import { lessonsTable } from '../infrastructure/drizzle/schemas/lessons.schema';
 import { evaluationsTable } from '../infrastructure/drizzle/schemas/evaluations.schema';
 import { userActiveLessonsEvaluationsTable } from '../infrastructure/drizzle/schemas/user-active-lessons-evaluations.schema';
 import { activeLessonsTable } from '../infrastructure/drizzle/schemas/active-lessons.schema';
-import { ApiNoContentResponse } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Testing')
 @Controller('api/testing')
 export class TestController {
   constructor(
@@ -17,6 +18,7 @@ export class TestController {
   ) {}
 
   @Delete('all-data')
+  @ApiOperation({ summary: 'Clear database: delete all data from all tables' })
   @ApiNoContentResponse({ description: 'All data is deleted' })
   @HttpCode(HttpStatuses.NO_CONTENT_204)
   async deleteAllData() {

@@ -27,10 +27,11 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('lessons')
+@ApiTags('Lessons')
 @Controller('api/lessons')
 export class LessonsController {
   constructor(
@@ -39,6 +40,7 @@ export class LessonsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Returns all active lessons' })
   @ApiOkResponse({
     description: 'Success',
     type: [ActiveLessonWithEvaluationsUsersOutputModel],
@@ -51,8 +53,9 @@ export class LessonsController {
   }
 
   @Post('available')
+  @ApiOperation({ summary: 'Create new available lesson' })
   @ApiCreatedResponse({
-    description: 'Created available lesson',
+    description: 'Created',
     type: AvailableLessonOutputModel,
   })
   @ApiBadRequestResponse({
@@ -92,8 +95,9 @@ export class LessonsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create new active lesson' })
   @ApiCreatedResponse({
-    description: 'Created active lesson',
+    description: 'Created',
     type: LessonOutputModel,
   })
   @ApiBadRequestResponse({
@@ -136,8 +140,9 @@ export class LessonsController {
   }
 
   @Post(':activeLessonId/evaluations')
+  @ApiOperation({ summary: 'Create new evaluation' })
   @ApiCreatedResponse({
-    description: 'Created evaluation',
+    description: 'Created',
     type: EvaluationOutputModel,
   })
   @ApiBadRequestResponse({
