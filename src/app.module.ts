@@ -8,6 +8,9 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { config } from 'dotenv';
 import { TestController } from './common/api/testing.controller';
 import { LessonModule } from './lessons/lesson.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'node:path';
 
 config();
 
@@ -17,6 +20,11 @@ const appControllers = [AppController, TestController];
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      playground: true,
     }),
     CqrsModule,
     DrizzleModule,
