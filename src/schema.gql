@@ -1,0 +1,72 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserGqlOutputModel {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type EvaluationGqlOutputModel {
+  id: ID!
+  userId: String!
+  score: String!
+}
+
+type EvaluationWithUserGqlOutputModel {
+  id: ID!
+  score: String!
+  user: UserGqlOutputModel!
+}
+
+type AvailableLessonGqlOutputModel {
+  id: ID!
+  name: String!
+  code: String!
+}
+
+type LessonGqlOutputModel {
+  id: ID!
+  name: String!
+  code: String!
+}
+
+type ActiveLessonWithEvaluationsUsersGqlOutputModel {
+  id: ID!
+  name: String!
+  code: String!
+  evaluations: [EvaluationWithUserGqlOutputModel!]!
+}
+
+type Query {
+  getAllUsers: [UserGqlOutputModel!]!
+  getAllActiveLessons: [ActiveLessonWithEvaluationsUsersGqlOutputModel!]!
+}
+
+type Mutation {
+  createUser(createModel: CreateUserGqlModel!): UserGqlOutputModel!
+  createAvailableLesson(createModel: CreateAvailableLessonModel!): AvailableLessonGqlOutputModel!
+  createActiveLessonAndRecordsToGradeBook(createModel: CreateActiveLessonModel!): LessonGqlOutputModel!
+  createEvaluation(activeLessonId: String!, createModel: CreateEvaluationGqlModel!): EvaluationGqlOutputModel!
+}
+
+input CreateUserGqlModel {
+  name: String!
+  email: String!
+}
+
+input CreateAvailableLessonModel {
+  name: String!
+  code: String!
+}
+
+input CreateActiveLessonModel {
+  availableLessonName: String!
+  userIds: [String!]!
+}
+
+input CreateEvaluationGqlModel {
+  userId: String!
+  score: String!
+}

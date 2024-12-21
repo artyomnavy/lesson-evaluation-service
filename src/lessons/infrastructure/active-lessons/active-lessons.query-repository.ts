@@ -35,7 +35,7 @@ export class ActiveLessonsQueryRepository {
       al.id AS id,
       l.name AS name,
       l.code AS code,
-      json_agg(
+      jsonb_agg(
         jsonb_build_object(
           'id', e.id,
           'score', e.score,
@@ -56,7 +56,7 @@ export class ActiveLessonsQueryRepository {
     evaluations AS e ON e.id = uale.evaluation_id
     LEFT JOIN
     users AS u ON u.id = uale.user_id
-    WHERE e.id IS NOT NULL
+    --WHERE e.id IS NOT NULL
     GROUP BY
     al.id, l.name, l.code`;
 
@@ -80,17 +80,19 @@ export class ActiveLessonsQueryRepository {
       code: activeLesson.code,
       evaluations:
         activeLesson.evaluations.length > 0
-          ? activeLesson.evaluations.map((evaluation) => {
-              return {
-                id: evaluation.id.toString(),
-                score: evaluation.score.toString(),
-                user: {
-                  id: evaluation.user.id.toString(),
-                  name: evaluation.user.name,
-                  email: evaluation.user.email,
-                },
-              };
-            })
+          ? activeLesson.evaluations
+              .filter((evaluation) => evaluation.id !== null)
+              .map((evaluation) => {
+                return {
+                  id: evaluation.id.toString(),
+                  score: evaluation.score.toString(),
+                  user: {
+                    id: evaluation.user.id.toString(),
+                    name: evaluation.user.name,
+                    email: evaluation.user.email,
+                  },
+                };
+              })
           : [],
     };
   }

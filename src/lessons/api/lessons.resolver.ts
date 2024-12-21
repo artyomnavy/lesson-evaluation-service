@@ -11,7 +11,7 @@ import {
 } from './models/lesson/lesson.output.model';
 import { CreateAvailableLessonCommand } from '../application/use-cases/lesson/create-available-lesson.use-case';
 import { CreateActiveLessonAndRecordsToGradeBookCommand } from '../application/use-cases/lesson/create-active-lesson-and-records-to-grade-book.use-case';
-import { CreateEvaluationModel } from './models/evaluation/evaluation.input.model';
+import { CreateEvaluationGqlModel } from './models/evaluation/evaluation.input.model';
 import { EvaluationGqlOutputModel } from './models/evaluation/evaluation.output.model';
 import { CreateEvaluationCommand } from '../application/use-cases/evaluation/create-evaluation-use.case';
 import { GetAllActiveLessonsQuery } from '../application/queries/get-all-active-lessons.query';
@@ -71,7 +71,7 @@ export class LessonsResolver {
   @Mutation(() => EvaluationGqlOutputModel)
   async createEvaluation(
     @Args('activeLessonId') activeLessonId: string,
-    @Args('createModel') createModel: CreateEvaluationModel,
+    @Args('createModel') createModel: CreateEvaluationGqlModel,
   ): Promise<EvaluationGqlOutputModel> {
     const { userId, score } = createModel;
 

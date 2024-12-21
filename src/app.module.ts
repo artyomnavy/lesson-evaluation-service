@@ -21,11 +21,11 @@ const appControllers = [AppController, TestController];
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    /*    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
-    }),
+    }),*/
     CqrsModule,
     DrizzleModule,
     UserModule,

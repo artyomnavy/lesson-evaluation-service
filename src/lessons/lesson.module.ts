@@ -14,8 +14,11 @@ import { UsersQueryRepository } from '../users/infrastructure/users.query-reposi
 import { GetAllUsersQueryHandler } from './application/queries/get-all-active-lessons.query';
 import { ActiveLessonsRepository } from './infrastructure/active-lessons/active-lessons.repository';
 import { ActiveLessonsQueryRepository } from './infrastructure/active-lessons/active-lessons.query-repository';
+import { LessonsResolver } from './api/lessons.resolver';
 
 const lessonsControllers = [LessonsController];
+
+const lessonsResolvers = [LessonsResolver];
 
 const lessonsUseCases = [
   CreateAvailableLessonUseCase,
@@ -49,6 +52,7 @@ const evaluationsRepositories = [EvaluationsRepository];
   imports: [CqrsModule, DrizzleModule],
   controllers: [...lessonsControllers],
   providers: [
+    // ...lessonsResolvers,
     ...availableLessonsRepositories,
     ...activeLessonsRepositories,
     ...recordsToGradeBookRepositories,

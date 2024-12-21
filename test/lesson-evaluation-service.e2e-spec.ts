@@ -177,7 +177,7 @@ describe('lesson-evaluation-service (e2e) testing', () => {
     availableLesson1 = createAvailableLesson1.body;
   });
 
-  // Создание первого доступного урока
+  // Создание второго доступного урока
   it('+ POST create available lesson 2 with correct data', async () => {
     const createData = {
       name: 'Музыка',

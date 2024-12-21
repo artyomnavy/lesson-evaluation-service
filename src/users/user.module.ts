@@ -6,8 +6,11 @@ import { UsersQueryRepository } from './infrastructure/users.query-repository';
 import { UsersRepository } from './infrastructure/users.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
+import { UsersResolver } from './api/users.resolver';
 
 const usersControllers = [UsersController];
+
+const usersResolvers = [UsersResolver];
 
 const usersQueries = [GetAllUsersQueryHandler];
 
@@ -18,6 +21,11 @@ const usersRepositories = [UsersQueryRepository, UsersRepository];
 @Module({
   imports: [CqrsModule, DrizzleModule],
   controllers: [...usersControllers],
-  providers: [...usersRepositories, ...usersQueries, ...usersUseCases],
+  providers: [
+    // ...usersResolvers,
+    ...usersRepositories,
+    ...usersQueries,
+    ...usersUseCases,
+  ],
 })
 export class UserModule {}
